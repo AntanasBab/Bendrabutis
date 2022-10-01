@@ -1,11 +1,11 @@
 global using Bendrabutis.Data;
 global using Microsoft.EntityFrameworkCore;
+using Bendrabutis.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -17,6 +17,8 @@ builder.Services.AddCors(c =>
 {
     c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
+
+builder.Services.AddTransient<DormitoryService>();
 
 var app = builder.Build();
 
