@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.3.32901.215
+VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bendrabutis", "Bendrabutis\Bendrabutis.csproj", "{F126D21D-CA94-4FED-8EF3-9832BBEC8247}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bendrabutis", "Bendrabutis\Bendrabutis.csproj", "{4880042F-9534-49E3-AFF5-C6CCB179409E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F126D21D-CA94-4FED-8EF3-9832BBEC8247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F126D21D-CA94-4FED-8EF3-9832BBEC8247}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F126D21D-CA94-4FED-8EF3-9832BBEC8247}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F126D21D-CA94-4FED-8EF3-9832BBEC8247}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4880042F-9534-49E3-AFF5-C6CCB179409E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4880042F-9534-49E3-AFF5-C6CCB179409E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4880042F-9534-49E3-AFF5-C6CCB179409E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4880042F-9534-49E3-AFF5-C6CCB179409E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4C9B6417-F138-4ABF-BF63-7CF8A2504BFF}
+		SolutionGuid = {A4D43666-2C1D-4B41-8367-A1656E74461F}
 	EndGlobalSection
 EndGlobal
