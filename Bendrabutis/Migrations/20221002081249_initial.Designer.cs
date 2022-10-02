@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bendrabutis.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221001195253_initialMigration")]
-    partial class initialMigration
+    [Migration("20221002081249_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
