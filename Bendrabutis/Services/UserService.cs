@@ -1,6 +1,5 @@
 ﻿using Bendrabutis.Models;
 using Bendrabutis.Models.Enums;
-using System.Security.Cryptography;
 
 namespace Bendrabutis.Services
 {
@@ -38,6 +37,7 @@ namespace Bendrabutis.Services
             return true;
         }
 
+        public async Task<Room?> GetRoom(int roomId) => await _context.Rooms.FindAsync(roomId);
         public async Task<bool> AssignRoom(int id, Room room)
         {
             var user = await _context.Users.FindAsync(id);

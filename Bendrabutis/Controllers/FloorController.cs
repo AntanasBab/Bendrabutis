@@ -1,6 +1,7 @@
 ﻿using Bendrabutis.Models;
 using Bendrabutis.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 
 namespace Bendrabutis.Controllers
 {
@@ -34,7 +35,9 @@ namespace Bendrabutis.Controllers
             if (dorm == null)
                 return NotFound($"Dormitory with id = {dormId} was not found.");
 
-            return Ok(await _floorService.Create(dorm, number));
+            return await _floorService.Create(dorm, number)
+                ? CreatedAtAction("Create", $"Floor with {number} created.")
+                : Conflict($"Floor with number = {number} already exists");
         }
 
         [HttpPatch("{id}")]

@@ -1,5 +1,6 @@
 global using Bendrabutis.Data;
 global using Microsoft.EntityFrameworkCore;
+using Bendrabutis.Models;
 using Bendrabutis.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,10 @@ builder.Services.AddCors(c =>
 });
 
 builder.Services.AddTransient<DormitoryService>();
+builder.Services.AddTransient<FloorService>();
+builder.Services.AddTransient<RequestService>();
+builder.Services.AddTransient<RoomService>();
+builder.Services.AddTransient<UserService>();
 
 var app = builder.Build();
 

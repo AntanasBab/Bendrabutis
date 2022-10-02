@@ -1,39 +1,60 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bendrabutis.Models.Enums;
+using Bendrabutis.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
     [Route("api/Requests")]
-    public class RequestController
+    public class RequestController : ControllerBase
     {
+        private readonly RequestService _requestService;
+
+        public RequestController(RequestService requestService)
+        {
+            _requestService = requestService;
+        }
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            throw new NotImplementedException();
+            return Ok(await _requestService.GetRequests());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            throw new NotImplementedException();
+            var req = await _requestService.Get(id);
+            return req == null ? NotFound($"Request with specified id = {id} was not found") : Ok(req);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(string name, string address, int? roomCapacity)
+        public async Task<IActionResult> Create(string userId, RequestType type, string? description)
         {
-            throw new NotImplementedException();
+            var user = await _requestService.GetUser(userId);
+            if (user == null) return NotFound($"User with id = {userId} was not found");
+            return await _requestService.Create(user, type, description)
+                ? CreatedAtAction("Create", "Request created.")
+                : BadRequest($"User with id = {userId} was not found");
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Update(int id, string? name = null, string? address = null, int? roomCapacity = null)
+        public async Task<IActionResult> Update(int id, RequestType? type, string? description)
         {
-            throw new NotImplementedException();
+            if (type == null && description == null) return BadRequest("Type and description were unspecified");
+
+            return await _requestService.Update(id, type, description)
+                ? Ok()
+                : NotFound($"Request with id = {id} was not found");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            return await _requestService.Remove(id)
+                ? Ok()
+                : NotFound($"Request with specified id = {id} was not found");
         }
     }
 }

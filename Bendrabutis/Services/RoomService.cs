@@ -25,7 +25,7 @@ namespace Bendrabutis.Services
 
         public async Task<bool> Create(Floor floor, int number, int numberOfLivingPlaces, double area)
         {
-            if (await _context.Rooms.AnyAsync(x => x.Number == number)) return false;
+            if (await _context.Rooms.AnyAsync(x => x.Number == number && x.Floor.Id == floor.Id)) return false;
 
             await _context.Rooms.AddAsync(new Room()
             {
@@ -36,10 +36,14 @@ namespace Bendrabutis.Services
             return true;
         }
 
-        public async Task<bool> Update(int id, Floor? floor, int? number, int? numberOfLivingPlaces, double? area)
+        public async Task<bool> Update(int id, int? floorId, int? number, int? numberOfLivingPlaces, double? area)
         {
             var room = await _context.Rooms.FindAsync(id);
             if (room == null) return false;
+            
+            Floor? floor = null;
+            if(floorId != null)
+                floor = await GetFloor(floorId.Value);
 
             if (floor != null) room.Floor = floor;
             if (number != null) room.Number = number.Value;
