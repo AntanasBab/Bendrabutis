@@ -13,12 +13,12 @@ namespace Bendrabutis.Services
 
         public async Task<List<Floor>> GetFloors()
         {
-            return await _context.Floors.ToListAsync();
+            return await _context.Floors.Include(m => m.Rooms).ToListAsync();
         }
 
         public async Task<Floor?> Get(int id)
         {
-            return await _context.Floors.FindAsync(id);
+            return _context.Floors.Include(m => m.Rooms).ToList().FirstOrDefault(m => m.Id == id);
         }
 
         public async Task<Dormitory?> FindDorm(int dormId)

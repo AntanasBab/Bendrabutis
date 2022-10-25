@@ -31,7 +31,7 @@ namespace Bendrabutis.Controllers
         public async Task<IActionResult> Create(string username, string password, string fullName, string phoneNumber)
         {
             return await _userService.Create(username, password, fullName, phoneNumber)
-                ? CreatedAtAction("Create", $"User with name {username} created.")
+                ? CreatedAtAction("Create", $"User with username {username} created.")
                 : Conflict($"User with name = {username} already exists");
         }
 
@@ -43,7 +43,7 @@ namespace Bendrabutis.Controllers
 
             return await _userService.AssignRoom(id, room)
                 ? Ok()
-                : NotFound($"User with specified id = {id} was not found");
+                : BadRequest($"Specified user is already a resident in this room or was not found");
         }
 
         [HttpPost("RemoveFromRoom")]

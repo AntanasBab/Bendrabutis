@@ -2,10 +2,15 @@ global using Bendrabutis.Data;
 global using Microsoft.EntityFrameworkCore;
 using Bendrabutis.Models;
 using Bendrabutis.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
 
 builder.Services.AddDbContext<DataContext>(options =>
 {

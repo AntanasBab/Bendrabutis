@@ -30,7 +30,7 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(string userId, RequestType type, string? description)
+        public async Task<IActionResult> Create(int userId, RequestType type, string? description)
         {
             var user = await _requestService.GetUser(userId);
             if (user == null) return NotFound($"User with id = {userId} was not found");

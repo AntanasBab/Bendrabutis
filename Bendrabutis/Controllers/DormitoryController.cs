@@ -35,7 +35,7 @@ namespace Bendrabutis.Controllers
                 return BadRequest("Room capacity is required.");
 
             return await _dormitoryService.CreateDormitory(name, address, roomCapacity.Value)
-                ? CreatedAtAction("Create", $"Dormitory with {name} created.")
+                ? CreatedAtAction("Create", $"Dormitory with name {name} created.")
                 : Conflict("Dormitory with specified name already exists.");
         }
 

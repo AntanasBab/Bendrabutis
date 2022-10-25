@@ -14,12 +14,12 @@ namespace Bendrabutis.Services
 
         public async Task<List<Dormitory>> GetAllDormitories()
         {
-            return await _dataContext.Dormitories.ToListAsync();
+            return await _dataContext.Dormitories.Include(m => m.Floors).ToListAsync();
         }
 
         public async Task<Dormitory?> GetDormitory(int id)
         {
-            return await _dataContext.Dormitories.FindAsync(id);
+            return _dataContext.Dormitories.Include(m => m.Floors).ToList().FirstOrDefault(x => x.Id == id);
         }
 
         public async Task<bool> CreateDormitory(string name, string address, int roomCapacity)

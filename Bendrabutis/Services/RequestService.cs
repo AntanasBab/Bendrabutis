@@ -13,7 +13,7 @@ namespace Bendrabutis.Services
 
         public async Task<List<Request>> GetRequests()
         {
-            return (await _context.Requests.ToListAsync()).OrderBy(x => x.CreatedAt).ToList();
+            return (await _context.Requests.Include(m => m.Author).ToListAsync()).OrderBy(x => x.CreatedAt).ToList();
         }
 
         public async Task<Request?> Get(int id)
@@ -21,7 +21,7 @@ namespace Bendrabutis.Services
             return await _context.Requests.FindAsync(id);
         }
 
-        public async Task<User?> GetUser(string userId) => await _context.Users.FindAsync(userId);
+        public async Task<User?> GetUser(int userId) => await _context.Users.FindAsync(userId);
 
         public async Task<bool> Create(User? author, RequestType type, string description)
         {
