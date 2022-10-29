@@ -1,11 +1,17 @@
-﻿using Bendrabutis.Models.Enums;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Bendrabutis.Models.Enums;
 using Bendrabutis.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Xml.Linq;
+using Bendrabutis.Auth;
+using Bendrabutis.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/Requests")]
     public class RequestController : ControllerBase
     {
@@ -30,13 +36,12 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(int userId, RequestType type, string? description)
+        [Authorize(Roles =  DormitoryRoles.Visitor)]
+        public async Task<IActionResult> Create(NewPostDto newPostDto)
         {
-            var user = await _requestService.GetUser(userId);
-            if (user == null) return NotFound($"User with id = {userId} was not found");
-            return await _requestService.Create(user, type, description)
+            return await _requestService.Create(User.FindFirstValue(JwtRegisteredClaimNames.Sub), newPostDto)
                 ? CreatedAtAction("Create", "Request created.")
-                : BadRequest($"User with id = {userId} was not found");
+                : BadRequest($"User with id = {User.FindFirstValue(JwtRegisteredClaimNames.Sub)} was not found");
         }
 
         [HttpPatch("{id}")]

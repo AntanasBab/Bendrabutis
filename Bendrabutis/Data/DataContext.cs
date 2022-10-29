@@ -1,14 +1,16 @@
 ﻿using Bendrabutis.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Bendrabutis.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User>
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-        public DbSet<Dormitory?> Dormitories { get; set; }
+        public DbSet<Dormitory> Dormitories { get; set; }
         public DbSet<Floor> Floors { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<User> Users { get; set; }
+
+        public DataContext(DbContextOptions<DataContext> options) : base(options){ }
     }
 }

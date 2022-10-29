@@ -1,14 +1,18 @@
 ﻿using Bendrabutis.Models;
+using Bendrabutis.Models.Dtos;
 using Bendrabutis.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bendrabutis.Services
 {
     public class RequestService
     {
         private readonly DataContext _context;
-        public RequestService(DataContext context)
+        public readonly UserManager<User> _userManager;
+        public RequestService(DataContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<List<Request>> GetRequests()
@@ -23,13 +27,16 @@ namespace Bendrabutis.Services
 
         public async Task<User?> GetUser(int userId) => await _context.Users.FindAsync(userId);
 
-        public async Task<bool> Create(User? author, RequestType type, string description)
+        public async Task<bool> Create(string authorId, NewPostDto dto)
         {
+            if (authorId == null) return false;
+
+            var author = await _userManager.FindByIdAsync(authorId);
             if (author == null) return false;
 
             await _context.Requests.AddAsync(new Request()
             {
-                Author = author, CreatedAt = DateTime.Now, Description = description, RequestType = type
+                Author = author, CreatedAt = DateTime.Now, Description = dto.Description, RequestType = dto.Type
             });
             await _context.SaveChangesAsync();
             return true;

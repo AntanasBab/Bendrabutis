@@ -1,10 +1,13 @@
 ﻿
+using Bendrabutis.Auth;
 using Bendrabutis.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/Dormitories")]
     public class DormitoryController : ControllerBase
     {
@@ -29,6 +32,7 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = DormitoryRoles.Admin)]
         public async Task<IActionResult> Create(string name, string address, int? roomCapacity)
         {
             if (roomCapacity == null)

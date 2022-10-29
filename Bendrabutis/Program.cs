@@ -1,10 +1,17 @@
 global using Bendrabutis.Data;
 global using Microsoft.EntityFrameworkCore;
-using Bendrabutis.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using Bendrabutis.Services;
 using System.Text.Json.Serialization;
+using Bendrabutis.Auth;
+using Bendrabutis.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 builder.Services.AddControllers().AddJsonOptions(x =>
 {
@@ -12,23 +19,42 @@ builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddCors(c =>
+// Authentication/Authorization
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:ValidAudience"];
+        options.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
+        options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]));
+    });
+
+builder.Services.Configure<IdentityOptions>(options =>
 {
-    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 5;
+    options.Password.RequireNonAlphanumeric = false;
 });
 
+builder.Services.AddTransient<ITokenManager, TokenManager>();
 builder.Services.AddTransient<DormitoryService>();
 builder.Services.AddTransient<FloorService>();
 builder.Services.AddTransient<RequestService>();
 builder.Services.AddTransient<RoomService>();
 builder.Services.AddTransient<UserService>();
+builder.Services.AddScoped<DbSeeder>();
 
 var app = builder.Build();
 
@@ -41,8 +67,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+var dbSeeder = app.Services.CreateScope().ServiceProvider.GetRequiredService<DbSeeder>();
+await dbSeeder.SeedAsync();
 
 app.Run();

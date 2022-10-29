@@ -1,4 +1,5 @@
-﻿using Bendrabutis.Services;
+﻿using Bendrabutis.Models;
+using Bendrabutis.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bendrabutis.Controllers
@@ -14,6 +15,12 @@ namespace Bendrabutis.Controllers
             _userService = userService;
         }
 
+        //[HttpPost("register")]
+        //public async Task<IActionResult> Register(UserLogin request)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -25,33 +32,6 @@ namespace Bendrabutis.Controllers
         {
             var user = await _userService.Get(id);
             return user == null ? NotFound($"User with specified id = {id} was not found") : Ok(user);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(string username, string password, string fullName, string phoneNumber)
-        {
-            return await _userService.Create(username, password, fullName, phoneNumber)
-                ? CreatedAtAction("Create", $"User with username {username} created.")
-                : Conflict($"User with name = {username} already exists");
-        }
-
-        [HttpPost("AssignRoom")]
-        public async Task<IActionResult> AssignRoom(int id, int roomId)
-        {
-            var room = await _userService.GetRoom(roomId);
-            if (room == null) return NotFound($"Room with specified id = {roomId} was not found");
-
-            return await _userService.AssignRoom(id, room)
-                ? Ok()
-                : BadRequest($"Specified user is already a resident in this room or was not found");
-        }
-
-        [HttpPost("RemoveFromRoom")]
-        public async Task<IActionResult> RemoveFromRoom(int id)
-        {
-            return await _userService.RemoveFromRoom(id)
-                ? Ok()
-                : NotFound($"User with specified id = {id} was not found");
         }
 
         [HttpPatch("{id}")]
