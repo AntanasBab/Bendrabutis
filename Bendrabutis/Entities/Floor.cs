@@ -1,4 +1,4 @@
-﻿namespace Bendrabutis.Models
+﻿namespace Bendrabutis.Entities
 {
     public class Floor
     {

@@ -1,6 +1,5 @@
 ﻿using Bendrabutis.Auth;
-using Bendrabutis.Models;
-using Bendrabutis.Models.Enums;
+using Bendrabutis.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Bendrabutis.Data

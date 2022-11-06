@@ -5,11 +5,11 @@ using System.Text;
 using Bendrabutis.Services;
 using System.Text.Json.Serialization;
 using Bendrabutis.Auth;
-using Bendrabutis.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Bendrabutis.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();

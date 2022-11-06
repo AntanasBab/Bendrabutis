@@ -2,7 +2,7 @@
 using Bendrabutis.Models.Enums;
 using Bendrabutis.Models.Interfaces;
 
-namespace Bendrabutis.Models
+namespace Bendrabutis.Entities
 {
     public class Request : IUserOwnedResource
     {

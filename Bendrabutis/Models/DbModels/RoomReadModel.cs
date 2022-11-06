@@ -1,12 +1,11 @@
-﻿namespace Bendrabutis.Models
+﻿namespace Bendrabutis.Models.DbModels
 {
-    public class Room
+    public class RoomReadModel
     {
         public int Id { get; set; }
-        public Floor Floor { get; set; }
         public int Number { get; set; }
         public int NumberOfLivingPlaces { get; set; }
         public double Area { get; set; }
-        public IEnumerable<User> Residents { get; set; } = new List<User>();
+        public List<UserReadModel> Residents { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Bendrabutis.Auth;
-using Bendrabutis.Models;
+using Bendrabutis.Entities;
 using Bendrabutis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -106,6 +106,19 @@ namespace Bendrabutis.Controllers
                     NumberOfLivingPlaces = x.NumberOfLivingPlaces,
                 }))
                 : NotFound("No empty rooms were found");
+        }
+
+        [HttpPost("AssignRoom/{id}")]
+        public async Task<IActionResult> AssignRoom(int id, string userId)
+        {
+            var result = await _roomService.AssignRoom(id, userId);
+            return result == string.Empty ? Ok("User has been added to the room.") : BadRequest(result);
+        }
+
+        [HttpPost("RemoveFromRoom/{id}")]
+        public async Task<IActionResult> RemoveFromRoom(int id, string userId)
+        {
+            return await _roomService.RemoveFromRoom(id, userId) ? Ok("User has been removed from the room.") : BadRequest("Failed to find specified user or room.");
         }
     }
 }

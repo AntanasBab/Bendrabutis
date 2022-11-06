@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using Bendrabutis.Auth;
-using Bendrabutis.Models;
+using Bendrabutis.Entities;
 using Bendrabutis.Models.Dtos;
 using Bendrabutis.Models.Enums;
 using Microsoft.AspNetCore.Authorization;

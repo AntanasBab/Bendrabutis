@@ -1,5 +1,5 @@
 ﻿using Bendrabutis.Auth;
-using Bendrabutis.Models;
+using Bendrabutis.Entities;
 using Bendrabutis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Bendrabutis.Models
+namespace Bendrabutis.Entities
 {
     public class User : IdentityUser
     {

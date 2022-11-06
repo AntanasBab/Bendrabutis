@@ -1,4 +1,4 @@
-﻿using Bendrabutis.Models;
+﻿using Bendrabutis.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bendrabutis.Services

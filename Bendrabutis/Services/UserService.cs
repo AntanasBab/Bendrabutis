@@ -1,4 +1,4 @@
-﻿using Bendrabutis.Models;
+﻿using Bendrabutis.Entities;
 
 namespace Bendrabutis.Services
 {
