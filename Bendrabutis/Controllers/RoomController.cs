@@ -1,10 +1,13 @@
-﻿using Bendrabutis.Models;
+﻿using Bendrabutis.Auth;
+using Bendrabutis.Models;
 using Bendrabutis.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
+    [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
     [Route("api/Rooms")]
     public class RoomController : ControllerBase
     {
@@ -35,7 +38,7 @@ namespace Bendrabutis.Controllers
             if (dorm == null) return NotFound("Dorm was not found");
 
             var rooms = await _roomService.GetSpecificRooms(dorm, FloorId);
-            if(RoomId == null)
+            if (RoomId == null)
                 return rooms == null ? NotFound($"Floor was not found") :
                     rooms.Count > 0 ? Ok(rooms.Select(x => new Room()
                     {
@@ -45,18 +48,17 @@ namespace Bendrabutis.Controllers
                         NumberOfLivingPlaces = x.NumberOfLivingPlaces,
                         Residents = x.Residents
                     })) : NotFound($"No rooms were found in this floor");
-            else
-            {
-                return rooms == null ? NotFound($"Floor was not found") :
-                    rooms.Count > 0 ? Ok(rooms.Select(x => new Room()
+
+            return rooms == null ? NotFound($"Floor was not found") :
+                rooms.Count > 0 ? Ok(rooms.Select(x => new Room()
                     {
                         Area = x.Area,
                         Id = x.Id,
                         Number = x.Number,
                         NumberOfLivingPlaces = x.NumberOfLivingPlaces,
                         Residents = x.Residents
-                    }).Where(y => y.Id == RoomId.Value)) : NotFound($"No rooms were found in this floor");
-            }
+                    })
+                    .Where(y => y.Id == RoomId.Value)) : NotFound($"No rooms were found in this floor");
         }
 
         [HttpPost]
@@ -89,19 +91,19 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpGet("GetFreeRooms")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetFreeRooms(int dormId)
         {
             var dorm = await _roomService.GetDorm(dormId);
             if (dorm == null) return NotFound($"Dorm with specified id = {dormId} was not found");
             var roomlist = await _roomService.GetFreeRooms(dorm);
             return roomlist.Any(x => x != null)
-                ? Ok(roomlist.Select(x => new Room()
+                ? Ok(roomlist.Select(x => new
                 {
                     Area = x.Area,
                     Id = x.Id,
                     Number = x.Number,
                     NumberOfLivingPlaces = x.NumberOfLivingPlaces,
-                    Residents = x.Residents
                 }))
                 : NotFound("No empty rooms were found");
         }

@@ -25,13 +25,13 @@ namespace Bendrabutis.Controllers
         [Route("register")]
         public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
         {
-            var user = await _userManager.FindByEmailAsync(registerUserDto.Email);
+            var user = await _userManager.FindByNameAsync(registerUserDto.Username);
             if (user != null)
             {
                 return BadRequest("Request invalid");
             }
 
-            var newUser = new User {UserName = registerUserDto.Email.Split('@')[0],Email = registerUserDto.Email};
+            var newUser = new User {UserName = registerUserDto.Username, Email = registerUserDto.Username + "@ktu.lt"};
             var createUserResult = await _userManager.CreateAsync(newUser, registerUserDto.Password);
 
             if (!createUserResult.Succeeded)

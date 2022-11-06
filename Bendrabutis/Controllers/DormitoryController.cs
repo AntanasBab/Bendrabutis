@@ -1,5 +1,4 @@
-﻿
-using Bendrabutis.Auth;
+﻿using Bendrabutis.Auth;
 using Bendrabutis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +18,14 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Get()
         {
             return Ok(await _dormitoryService.GetAllDormitories());
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Get(int id)
         {
             var dormitory = await _dormitoryService.GetDormitory(id);
@@ -32,11 +33,10 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = DormitoryRoles.Admin)]
+        [Authorize(Roles = $"{DormitoryRoles.Admin}, {DormitoryRoles.Owner}")]
         public async Task<IActionResult> Create(string name, string address, int? roomCapacity)
         {
-            if (roomCapacity == null)
-                return BadRequest("Room capacity is required.");
+            if (roomCapacity == null) return BadRequest("Room capacity is required.");
 
             return await _dormitoryService.CreateDormitory(name, address, roomCapacity.Value)
                 ? CreatedAtAction("Create", $"Dormitory with name {name} created.")
@@ -44,18 +44,24 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Update(int id, string? name = null, string? address = null, int? roomCapacity = null)
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
+        public async Task<IActionResult> Update(int id, string? name = null, string? address = null,
+            int? roomCapacity = null)
         {
-            if(name == null && address == null && roomCapacity == null)
-                return BadRequest();
+            if (name == null && address == null && roomCapacity == null) return BadRequest();
 
-            return await _dormitoryService.UpdateDormitory(id, name, address, roomCapacity) ? Ok() : NotFound($"Dormitory with id = {id} was not found.");
+            return await _dormitoryService.UpdateDormitory(id, name, address, roomCapacity)
+                ? Ok()
+                : NotFound($"Dormitory with id = {id} was not found.");
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return await _dormitoryService.DeleteDormitory(id) ? Ok($"Dormitory with id = {id} removed.") : NotFound($"Dormitory with id = {id} was not found.");
+            return await _dormitoryService.DeleteDormitory(id)
+                ? Ok($"Dormitory with id = {id} removed.")
+                : NotFound($"Dormitory with id = {id} was not found.");
         }
     }
 }

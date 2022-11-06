@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using Bendrabutis.Auth;
 using Bendrabutis.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
@@ -48,6 +49,11 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequestResourceOwner", policy => policy.Requirements.Add(new ResourceOwnerRequirement()));
+});
+
 builder.Services.AddTransient<ITokenManager, TokenManager>();
 builder.Services.AddTransient<DormitoryService>();
 builder.Services.AddTransient<FloorService>();
@@ -55,6 +61,7 @@ builder.Services.AddTransient<RequestService>();
 builder.Services.AddTransient<RoomService>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddScoped<DbSeeder>();
+builder.Services.AddSingleton<IAuthorizationHandler, ResourOwnerAuthorizationHandler>();
 
 var app = builder.Build();
 

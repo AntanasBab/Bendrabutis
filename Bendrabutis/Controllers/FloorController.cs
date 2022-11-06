@@ -1,11 +1,13 @@
-﻿using Bendrabutis.Models;
+﻿using Bendrabutis.Auth;
+using Bendrabutis.Models;
 using Bendrabutis.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml.Linq;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/Floors")]
     public class FloorController : ControllerBase
     {
@@ -16,12 +18,14 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Get()
         {
             return Ok(await _floorService.GetFloors());
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Get(int id)
         {
             var result = await _floorService.Get(id);
@@ -29,6 +33,7 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Create(int dormId, int number)
         {
             var dorm = await _floorService.FindDorm(dormId);
@@ -41,6 +46,7 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Update(int id, int? number, int? dormId)
         {
             if (number == null && dormId == null)
@@ -54,6 +60,7 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Delete(int id)
         {
             return await _floorService.Remove(id) ? Ok() : NotFound($"Floor with id = {id} was not found.");

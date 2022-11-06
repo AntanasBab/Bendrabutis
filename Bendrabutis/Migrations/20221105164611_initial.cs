@@ -223,19 +223,20 @@ namespace Bendrabutis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     RequestType = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Requests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Requests_AspNetUsers_AuthorId",
-                        column: x => x.AuthorId,
+                        name: "FK_Requests_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -288,9 +289,9 @@ namespace Bendrabutis.Migrations
                 column: "DormitoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Requests_AuthorId",
+                name: "IX_Requests_UserId",
                 table: "Requests",
-                column: "AuthorId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rooms_FloorId",

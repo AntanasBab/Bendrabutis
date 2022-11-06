@@ -5,6 +5,8 @@ namespace Bendrabutis.Models.Dtos
     public record UserDto(string Id, string email);
 
     public record LoginDto(string email, string password);
+
     public record SuccessfulLoginDto(string AccessToken);
-    public record RegisterUserDto([Required][EmailAddress] string Email, [Required] string Password);
+
+    public record RegisterUserDto([Required] string Username, [Required] string Password);
 }

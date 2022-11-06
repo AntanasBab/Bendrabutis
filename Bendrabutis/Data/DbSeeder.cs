@@ -19,20 +19,41 @@ namespace Bendrabutis.Data
         public async Task SeedAsync()
         {
             await AddDefaultRoles();
+            await AddOwnerUser();
             await AddAdminUser();
+        }
+
+        private async Task AddOwnerUser()
+        {
+            var ownerUser = new User()
+            {
+                UserName = "owner",
+                Email = "owner@ktu.lt",
+            };
+
+            var existingUser = await _userManager.FindByEmailAsync(ownerUser.Email);
+            if (existingUser == null)
+            {
+                var createdAdminUser = await _userManager.CreateAsync(ownerUser, "Owner123");
+                if (createdAdminUser.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(ownerUser, DormitoryRoles.Owner);
+                }
+            }
         }
 
         private async Task AddAdminUser()
         {
             var adminUser = new User()
             {
+                UserName = "admin",
                 Email = "admin@ktu.lt",
             };
 
             var existingUser = await _userManager.FindByEmailAsync(adminUser.Email);
             if (existingUser == null)
             {
-                var createdAdminUser = await _userManager.CreateAsync(adminUser, "1234567890");
+                var createdAdminUser = await _userManager.CreateAsync(adminUser, "Admin123");
                 if (createdAdminUser.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(adminUser, DormitoryRoles.Admin);
