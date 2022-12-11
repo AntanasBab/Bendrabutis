@@ -9,6 +9,10 @@ export class UrlManager {
     return `${UrlManager._serverUrl}login`;
   }
 
+  public static getRegisterEndpoint() {
+    return `${UrlManager._serverUrl}register`;
+  }
+
   /** Dorm controller endpoints */
   private static _DormitoriesController: string = `${UrlManager._serverUrl}Dormitories/`;
 

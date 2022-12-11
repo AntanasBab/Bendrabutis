@@ -56,8 +56,8 @@ export const Requests = (): JSX.Element => {
     <>
       <ResponsiveAppBar />
       <Grid
-        className="mt-3"
         container
+        className="mt-3"
         direction="row"
         justifyContent="flex-start"
         alignItems="center"
@@ -67,13 +67,7 @@ export const Requests = (): JSX.Element => {
             Mano prašymai
           </Typography>
         </Grid>
-        <Grid
-          item
-          md={6}
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-        >
+        <Grid item md={6} justifyContent="flex-start" alignItems="flex-start">
           <Typography gutterBottom variant="h5" component="div">
             Naujas prašymas:
           </Typography>
