@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -13,15 +13,20 @@ import MenuItem from "@mui/material/MenuItem";
 import KTUlogo from "../icons/KTUlogo";
 import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 const pages = ["Laisvi kambariai", "Bendrabučių valdymas", "Prašymai"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+let settings = ["Profilis", "Atsijungti"];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
   const navigate = useNavigate();
+  const cookies = new Cookies();
+
+  useEffect(() => {
+    if (cookies.get("JWT") === undefined) settings = ["Prisijungti"];
+  }, []);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -36,6 +41,21 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleUserSettingClick = (setting) => {
+    switch (setting) {
+      case "Profilis":
+        navigate("/profile");
+        break;
+      case "Atsijungti":
+        cookies.remove("JWT", { path: "/" });
+        navigate("/login");
+        break;
+      case "Prisijungti":
+        navigate("/login");
+        break;
+    }
   };
 
   const redirect = (link) => {
@@ -162,7 +182,9 @@ function ResponsiveAppBar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Button onClick={() => handleUserSettingClick(setting)}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </Button>
                 </MenuItem>
               ))}
             </Menu>

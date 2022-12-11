@@ -12,10 +12,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { JWTAuthToken, LoginModel } from "../../data/dataModels";
+import { LoginModel } from "../../data/dataModels";
 import axios from "axios";
 import { UrlManager } from "../../utils/urlmanager";
-import jwt_decode from "jwt-decode";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -49,12 +48,6 @@ const Login = () => {
       })
       .then((response) => {
         cookies.set("JWT", response.data.accessToken, { path: "/" });
-        const token = jwt_decode<JWTAuthToken>(response.data.accessToken);
-        cookies.set(
-          "Role",
-          token["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
-          { path: "/" }
-        );
         navigate("/");
       })
       .catch((err) => {
