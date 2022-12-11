@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Bendrabutis.Auth;
 using Bendrabutis.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
-using Bendrabutis.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
     [Authorize]
+    [EnableCors("CorsApi")]
     [Route("api/Requests")]
     public class RequestController : ControllerBase
     {

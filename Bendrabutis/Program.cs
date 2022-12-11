@@ -13,7 +13,13 @@ using Bendrabutis.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsApi",
+        builder => builder.WithOrigins("http://localhost:3000", "http://mywebsite.com")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 builder.Services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -73,10 +79,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("CorsApi");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 var dbSeeder = app.Services.CreateScope().ServiceProvider.GetRequiredService<DbSeeder>();

@@ -1,12 +1,14 @@
 ﻿using Bendrabutis.Auth;
 using Bendrabutis.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
     [Authorize]
+    [EnableCors("CorsApi")]
     [Route("api/Dormitories")]
     public class DormitoryController : ControllerBase
     {
@@ -18,14 +20,14 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             return Ok(await _dormitoryService.GetAllDormitories());
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(int id)
         {
             var dormitory = await _dormitoryService.GetDormitory(id);

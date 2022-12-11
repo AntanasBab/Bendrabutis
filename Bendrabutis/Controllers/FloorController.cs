@@ -2,12 +2,14 @@
 using Bendrabutis.Entities;
 using Bendrabutis.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
     [Authorize]
+    [EnableCors("CorsApi")]
     [Route("api/Floors")]
     public class FloorController : ControllerBase
     {

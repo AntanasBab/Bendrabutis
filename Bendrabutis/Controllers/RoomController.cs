@@ -2,11 +2,13 @@
 using Bendrabutis.Entities;
 using Bendrabutis.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
+    [EnableCors("CorsApi")]
     [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
     [Route("api/Rooms")]
     public class RoomController : ControllerBase

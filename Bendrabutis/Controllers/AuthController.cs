@@ -2,6 +2,7 @@
 using Bendrabutis.Entities;
 using Bendrabutis.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace Bendrabutis.Controllers
 {
     [ApiController]
     [AllowAnonymous]
+    [EnableCors("CorsApi")]
     [Route("api")]
     public class AuthController : ControllerBase
     {

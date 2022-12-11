@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Cors;
 
 namespace Bendrabutis.Controllers
 {
     [ApiController]
+    [EnableCors("CorsApi")]
     [Authorize(Roles = DormitoryRoles.Owner)]
     [Route("api/Users")]
     public class UserController : ControllerBase
