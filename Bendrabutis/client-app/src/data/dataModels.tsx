@@ -46,7 +46,7 @@ export enum RequestTypes {
   ChangeRoom,
 }
 
-export interface Request {
+export interface UserRequest {
   id: number;
   requestType: RequestTypes;
   createdAt: Date;

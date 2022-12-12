@@ -24,7 +24,6 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = $"{DormitoryRoles.Owner}, {DormitoryRoles.Admin}")]
         public async Task<IActionResult> Get()
         {
             return Ok(await _requestService.GetRequests());

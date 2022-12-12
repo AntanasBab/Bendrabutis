@@ -5,16 +5,25 @@ import {
   TextField,
   InputLabel,
   Select,
+  Card,
+  CardActionArea,
+  CardContent,
+  Stack,
+  MenuItem,
 } from "@mui/material";
 import ResponsiveAppBar from "../../components/header/ResponsiveAppBar";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Footer from "../../components/footer/Footer";
-import { useState } from "react";
-import MenuItem from "@mui/material/MenuItem";
+import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { RequestTypes } from "../../data/dataModels";
+import { RequestTypes, UserRequest } from "../../data/dataModels";
+import axios from "axios";
+import { UrlManager } from "../../utils/urlmanager";
+import Cookies from "universal-cookie";
+import UpdateRequestModal from "../../components/modal/updateRequestModal";
+import EditIcon from "@mui/icons-material/Edit";
 
 const schema = yup
   .object({
@@ -23,6 +32,7 @@ const schema = yup
   .required("Forma negali būti tusčia");
 
 export const Requests = (): JSX.Element => {
+  const cookies = new Cookies();
   const {
     register,
     handleSubmit,
@@ -32,6 +42,18 @@ export const Requests = (): JSX.Element => {
   });
 
   const [reqType, setReqType] = useState<RequestTypes>(RequestTypes.ChangeRoom);
+  const [reqList, setReqList] = useState<UserRequest[]>([]);
+  const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    axios
+      .get<UserRequest[]>(UrlManager.geAllRoomsEndpoint(), {
+        headers: { Authorization: `Bearer ${cookies.get("JWT")}` },
+      })
+      .then((floors) => {
+        setReqList(floors.data);
+      });
+  });
 
   const handleChange = (event: SelectChangeEvent) => {
     switch (event.target.value) {
@@ -57,16 +79,11 @@ export const Requests = (): JSX.Element => {
       <ResponsiveAppBar />
       <Grid
         container
-        className="mt-3"
         direction="row"
         justifyContent="flex-start"
+        spacing={3}
         alignItems="center"
       >
-        <Grid item md={6}>
-          <Typography gutterBottom variant="h5" component="div">
-            Mano prašymai
-          </Typography>
-        </Grid>
         <Grid item md={6} justifyContent="flex-start" alignItems="flex-start">
           <Typography gutterBottom variant="h5" component="div">
             Naujas prašymas:
@@ -105,6 +122,76 @@ export const Requests = (): JSX.Element => {
               Sukurti
             </Button>
           </form>
+        </Grid>
+        <Grid item md={6} xl>
+          <Typography
+            gutterBottom
+            variant="h4"
+            component="div"
+            display="flex"
+            justifyContent="flex-start"
+          >
+            Mano prašymai
+          </Typography>
+          {reqList.length === 0 ? (
+            <>
+              <Typography
+                gutterBottom
+                variant="h6"
+                component="div"
+                display="flex"
+                justifyContent="flex-start"
+              >
+                Jūs neturite nei vieno prašymo.
+              </Typography>
+              <Typography
+                gutterBottom
+                variant="h6"
+                component="div"
+                display="flex"
+                justifyContent="flex-start"
+              >
+                Norint pateikti naują prašyma, užpildykite praymo formą kairėje.
+              </Typography>
+            </>
+          ) : (
+            <>
+              {reqList.map((req, index) => (
+                <Grid item key={index} xs={"auto"} className="mt-1">
+                  <Card sx={{ maxWidth: 345 }}>
+                    <CardActionArea>
+                      <CardContent>
+                        <Typography gutterBottom variant="h3" component="div">
+                          {req.requestType}
+                        </Typography>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {req.description}
+                        </Typography>
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          className={"flex mt-6"}
+                        >
+                          <Button
+                            variant="contained"
+                            endIcon={<EditIcon />}
+                            onClick={() => setUpdateModalOpen(true)}
+                          >
+                            Redaguoti
+                          </Button>
+                          <UpdateRequestModal
+                            request={req}
+                            open={updateModalOpen}
+                            onClose={() => setUpdateModalOpen(false)}
+                          />
+                        </Stack>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Grid>
+              ))}
+            </>
+          )}
         </Grid>
       </Grid>
       <Footer />

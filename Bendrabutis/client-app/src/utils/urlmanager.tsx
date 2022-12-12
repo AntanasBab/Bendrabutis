@@ -20,10 +20,14 @@ export class UrlManager {
     return `${UrlManager._DormitoriesController}`;
   }
 
-  /** Dorm controller endpoints */
+  /** Room controller endpoints */
   private static _RoomsController: string = `${UrlManager._serverUrl}Rooms/`;
 
   public static getFreeRoomsEndpoint(dormId: number) {
     return `${UrlManager._RoomsController}GetFreeRooms?dormId=${dormId}`;
+  }
+
+  public static geAllRoomsEndpoint() {
+    return `${UrlManager._RoomsController}`;
   }
 }
