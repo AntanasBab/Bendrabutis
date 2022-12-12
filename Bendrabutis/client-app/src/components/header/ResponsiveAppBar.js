@@ -15,7 +15,13 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 
-const pages = ["Laisvi kambariai", "Bendrabučių valdymas", "Prašymai"];
+const pages = [
+  "Laisvi kambariai",
+  "Bendrabučių valdymas",
+  "Aukštų valdymas",
+  "Kambarių valdymas",
+  "Prašymai",
+];
 let settings = ["Profilis", "Atsijungti"];
 
 function ResponsiveAppBar() {
@@ -65,6 +71,12 @@ function ResponsiveAppBar() {
         break;
       case "Bendrabučių valdymas":
         navigate("/dormmanagement");
+        break;
+      case "Aukštų valdymas":
+        navigate("/floormanagement");
+        break;
+      case "Kambarių valdymas":
+        navigate("/roommanagement");
         break;
       case "Prašymai":
         navigate("/requestcreation");

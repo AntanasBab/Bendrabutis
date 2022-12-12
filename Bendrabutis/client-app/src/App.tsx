@@ -8,6 +8,8 @@ import Home from "./pages/home/home";
 import Login from "./pages/auth/login";
 import { Requests } from "./pages/requests/Requests";
 import Rooms from "./pages/rooms/rooms";
+import FloorManagement from "./pages/floors/FloorManagement";
+import RoomManagement from "./pages/rooms/RoomManagement";
 import Register from "./pages/auth/register";
 
 function App() {
@@ -26,6 +28,22 @@ function App() {
             element={
               <RolesAuthRoute role={UserRoles.Admin}>
                 <DormManagement />
+              </RolesAuthRoute>
+            }
+          />
+          <Route
+            path="floormanagement"
+            element={
+              <RolesAuthRoute role={UserRoles.Admin}>
+                <FloorManagement />
+              </RolesAuthRoute>
+            }
+          />
+          <Route
+            path="roommanagement"
+            element={
+              <RolesAuthRoute role={UserRoles.Admin}>
+                <RoomManagement />
               </RolesAuthRoute>
             }
           />
