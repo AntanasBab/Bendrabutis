@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { UrlManager } from "../../utils/urlmanager";
+import axios from "axios";
+import Cookies from "universal-cookie";
 
 export interface DormFormFields {
   name: string;
@@ -20,6 +23,7 @@ const schema = yup
   .required("UZPILDYK");
 
 export const DormForm = () => {
+  const cookies = new Cookies();
   const {
     handleSubmit,
     register,
@@ -28,7 +32,16 @@ export const DormForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: DormFormFields) =>
+    axios.post(
+      UrlManager.getAllDormsEndpoint(),
+      { ...data },
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.get("JWT")}`,
+        },
+      }
+    );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
