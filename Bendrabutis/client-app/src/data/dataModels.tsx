@@ -9,6 +9,11 @@ export interface LoginModel {
   password: string;
 }
 
+export interface RegisterModel {
+  username: string;
+  password: string;
+}
+
 export interface JWTAuthToken {
   exp: string;
   "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string;
