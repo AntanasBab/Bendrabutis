@@ -16,10 +16,21 @@ export class UrlManager {
     return `${UrlManager._DormitoriesController}`;
   }
 
-  /** Dorm controller endpoints */
+  /** Floor controller endpoints */
+  private static _FloorsController: string = `${UrlManager._serverUrl}Floors/`;
+
+  public static getAllDormFloorsEndpoint() {
+    return `${UrlManager._FloorsController}`;
+  }
+
+  /** Room controller endpoints */
   private static _RoomsController: string = `${UrlManager._serverUrl}Rooms/`;
 
   public static getFreeRoomsEndpoint(dormId: number) {
     return `${UrlManager._RoomsController}GetFreeRooms?dormId=${dormId}`;
+  }
+
+  public static getRoomsEndpoint() {
+    return `${UrlManager._RoomsController}`;
   }
 }

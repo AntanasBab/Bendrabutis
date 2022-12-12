@@ -5,30 +5,35 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  Button,
   Stack,
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ResponsiveAppBar from "../../components/header/ResponsiveAppBar";
-import { Dormitory } from "../../data/dataModels";
+import { Room } from "../../data/dataModels";
 import { UrlManager } from "../../utils/urlmanager";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteDormModal from "../../components/modal/deleteDormModal";
-import UpdateDormModal from "../../components/modal/updateDormModal";
+// import DeleteIcon from "@mui/icons-material/Delete";
+// import EditIcon from "@mui/icons-material/Edit";
+// import DeleteDormModal from "../../components/modal/deleteDormModal";
+// import UpdateDormModal from "../../components/modal/updateDormModal";
 import Footer from "../../components/footer/Footer";
-import { DormForm } from "./DormForm";
+import { RoomForm } from "./RoomForm";
+import Cookies from "universal-cookie";
 
-const DormManagement = (): JSX.Element => {
-  const [dormList, SetDormList] = useState<Dormitory[]>();
-  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  const [updateModalOpen, setUpdateModalOpen] = React.useState(false);
+const RoomManagement = (): JSX.Element => {
+  const cookies = new Cookies();
+  const [roomList, setRoomList] = useState<Room[]>();
+  // const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+  // const [updateModalOpen, setUpdateModalOpen] = React.useState(false);
 
   useEffect(() => {
-    axios.get<Dormitory[]>(UrlManager.getAllDormsEndpoint()).then((dorms) => {
-      SetDormList(dorms.data);
-    });
+    axios
+      .get<Room[]>(UrlManager.getRoomsEndpoint(), {
+        headers: { Authorization: `Bearer ${cookies.get("JWT")}` },
+      })
+      .then((rooms) => {
+        setRoomList(rooms.data);
+      });
   }, []);
 
   return (
@@ -49,7 +54,7 @@ const DormManagement = (): JSX.Element => {
             alignItems="flex-start"
             spacing={1}
           >
-            {dormList?.map((dorm, index) => (
+            {roomList?.map((room, index) => (
               <Grid item key={index} xs={"auto"} className="mt-1">
                 <Card sx={{ maxWidth: 345 }}>
                   <CardActionArea>
@@ -61,30 +66,30 @@ const DormManagement = (): JSX.Element => {
                     />
                     <CardContent>
                       <Typography gutterBottom variant="h5" component="div">
-                        {dorm.name}
+                        {`Kambario numeris: ${room.number}`}
                       </Typography>
                       <Typography variant="body1" color="text.secondary">
-                        {dorm.address}
+                        {`Kambario plotas: ${room.area}`}
                       </Typography>
                       <Typography variant="body1" color="text.secondary">
-                        {`Iš viso kambarių: ${dorm.roomCapacity}`}
+                        {`Vietų skaičius: ${room.numberOfLivingPlaces}`}
                       </Typography>
                       <Stack
                         direction="row"
                         spacing={2}
                         className={"flex mt-6"}
                       >
-                        <Button
+                        {/* <Button
                           variant="outlined"
                           startIcon={<DeleteIcon />}
                           onClick={() => setDeleteModalOpen(true)}
                         >
                           Panaikinti
-                        </Button>
-                        <DeleteDormModal
+                        </Button> */}
+                        {/* <DeleteDormModal
                           open={deleteModalOpen}
                           onClose={() => setDeleteModalOpen(false)}
-                          dorm={dormList[index]}
+                          dorm={floorList[index]}
                         />
                         <Button
                           variant="contained"
@@ -97,7 +102,7 @@ const DormManagement = (): JSX.Element => {
                           open={updateModalOpen}
                           onClose={() => setUpdateModalOpen(false)}
                           dorm={dorm}
-                        />
+                        /> */}
                       </Stack>
                     </CardContent>
                   </CardActionArea>
@@ -114,9 +119,9 @@ const DormManagement = (): JSX.Element => {
           alignItems="flex-start"
         >
           <Typography gutterBottom variant="h5" component="div">
-            Naujas bendrabutis:
+            Naujas kambarys:
           </Typography>
-          <DormForm />
+          <RoomForm />
         </Grid>
       </Grid>
       <Footer />
@@ -124,4 +129,4 @@ const DormManagement = (): JSX.Element => {
   );
 };
 
-export default DormManagement;
+export default RoomManagement;
