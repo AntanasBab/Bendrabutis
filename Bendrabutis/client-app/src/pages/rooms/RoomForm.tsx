@@ -57,11 +57,27 @@ export const RoomForm = () => {
       });
   }, []);
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: any) =>
+    axios
+      .post(
+        UrlManager.getCreateRoomEndpoint(
+          data.floorId,
+          data.number,
+          data.numberOfLivingPlaces,
+          data.area
+        ),
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.get("JWT")}`,
+          },
+        }
+      )
+      .then(() => window.location.reload());
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={4}>
+      <Stack spacing={4} sx={{ width: "75%" }}>
         <TextField
           label="Kambario numeris"
           style={{ margin: "10px 0 0 0" }}

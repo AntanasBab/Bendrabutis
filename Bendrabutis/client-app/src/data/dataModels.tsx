@@ -51,4 +51,10 @@ export interface UserRequest {
   requestType: RequestTypes;
   createdAt: Date;
   description: string;
+  author: User;
+}
+
+export interface User {
+  userName: string;
+  email: string;
 }

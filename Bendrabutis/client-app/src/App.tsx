@@ -6,16 +6,17 @@ import { UserRoles } from "./data/dataModels";
 import DormManagement from "./pages/dormitories/dormManagement";
 import Home from "./pages/home/home";
 import Login from "./pages/auth/login";
-import { Requests } from "./pages/requests/Requests";
-import Rooms from "./pages/rooms/rooms";
+import RequestManagement from "./pages/requests/Requests";
+import Rooms from "./pages/rooms/FreeRooms";
 import FloorManagement from "./pages/floors/FloorManagement";
 import RoomManagement from "./pages/rooms/RoomManagement";
 import Register from "./pages/auth/register";
+import { Grid } from "@mui/material";
 
 function App() {
   return (
     <Router>
-      <div>
+      <Grid sx={{ maxWidth: "100%" }}>
         {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
         <Routes>
@@ -47,10 +48,10 @@ function App() {
               </RolesAuthRoute>
             }
           />
-          <Route path="/requestcreation" element={<Requests />} />
+          <Route path="/requestcreation" element={<RequestManagement />} />
           <Route path="/profile" element={<></>} />
         </Routes>
-      </div>
+      </Grid>
     </Router>
   );
 }

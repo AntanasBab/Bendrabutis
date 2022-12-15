@@ -6,25 +6,26 @@ import {
   CardContent,
   CardMedia,
   Stack,
+  Button,
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ResponsiveAppBar from "../../components/header/ResponsiveAppBar";
 import { DormFloor } from "../../data/dataModels";
 import { UrlManager } from "../../utils/urlmanager";
-// import DeleteIcon from "@mui/icons-material/Delete";
-// import EditIcon from "@mui/icons-material/Edit";
-// import DeleteDormModal from "../../components/modal/deleteDormModal";
-// import UpdateDormModal from "../../components/modal/updateDormModal";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import Footer from "../../components/footer/Footer";
 import { FloorForm } from "./FloorForm";
 import Cookies from "universal-cookie";
+import UpdateFloorModal from "../../components/modal/floor/updateFloorModal";
+import DeleteFloorModal from "../../components/modal/floor/deleteFloorModal";
 
 const FloorManagement = (): JSX.Element => {
   const cookies = new Cookies();
   const [floorList, setFloorList] = useState<DormFloor[]>();
-  // const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  // const [updateModalOpen, setUpdateModalOpen] = React.useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = React.useState(false);
 
   useEffect(() => {
     axios
@@ -40,11 +41,11 @@ const FloorManagement = (): JSX.Element => {
     <>
       <ResponsiveAppBar />
       <Grid
-        className="mt-3"
         container
-        direction="row"
+        spacing={2}
         justifyContent="flex-start"
         alignItems="center"
+        sx={{ m: 2, width: "90%" }}
       >
         <Grid item md={6}>
           <Grid
@@ -61,29 +62,29 @@ const FloorManagement = (): JSX.Element => {
                     <CardMedia
                       component="img"
                       height="140"
-                      image="https://dormitory.ktu.edu/wp-content/uploads/sites/244/2018/07/Bendrabutis.png"
-                      alt="Bendrabutis"
+                      image="https://thinkwood-wordpress.s3.amazonaws.com/wp-content/uploads/2020/09/22162304/ThinkWood-Hybrid-BuildingWhite-F-rev.jpg"
+                      alt="Aukstas"
                     />
                     <CardContent>
                       <Typography gutterBottom variant="h5" component="div">
-                        Aukštas {floor.number}
+                        {floor.number} aukštas
                       </Typography>
                       <Stack
                         direction="row"
                         spacing={2}
                         className={"flex mt-6"}
                       >
-                        {/* <Button
+                        <Button
                           variant="outlined"
                           startIcon={<DeleteIcon />}
                           onClick={() => setDeleteModalOpen(true)}
                         >
                           Panaikinti
-                        </Button> */}
-                        {/* <DeleteDormModal
-                          open={deleteModalOpen}
+                        </Button>
+                        <DeleteFloorModal
+                          floor={floor}
                           onClose={() => setDeleteModalOpen(false)}
-                          dorm={floorList[index]}
+                          open={deleteModalOpen}
                         />
                         <Button
                           variant="contained"
@@ -92,11 +93,11 @@ const FloorManagement = (): JSX.Element => {
                         >
                           Redaguoti
                         </Button>
-                        <UpdateDormModal
+                        <UpdateFloorModal
                           open={updateModalOpen}
+                          floor={floor}
                           onClose={() => setUpdateModalOpen(false)}
-                          dorm={dorm}
-                        /> */}
+                        />
                       </Stack>
                     </CardContent>
                   </CardActionArea>

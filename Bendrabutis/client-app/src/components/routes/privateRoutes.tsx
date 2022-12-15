@@ -20,7 +20,7 @@ export function RolesAuthRoute({
       jwt_decode<JWTAuthToken>(token)[
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
       ];
-    console.log(role);
+
     switch (role) {
       case "Owner":
         userRoles = UserRoles.Owner;

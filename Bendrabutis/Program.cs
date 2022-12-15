@@ -16,7 +16,7 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsApi",
-        builder => builder.WithOrigins("http://localhost:3000", "http://mywebsite.com")
+        builder => builder.WithOrigins("http://localhost:3000", "https://bendrabutisapp.azurewebsites.net", "https://bendrabutissystem.azurewebsites.net")
             .AllowAnyHeader()
             .AllowAnyMethod());
 });

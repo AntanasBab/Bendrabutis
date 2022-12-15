@@ -2,17 +2,27 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Dormitory } from "../../data/dataModels";
+import { DormFloor, Dormitory } from "../../../data/dataModels";
 import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Stack from "@mui/material/Stack";
+import * as yup from "yup";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Cookies from "universal-cookie";
+import axios from "axios";
+import { UrlManager } from "../../../utils/urlmanager";
 
-export interface DeleteDormModalProps {
+export interface DeleteFloorModalProps {
   open: boolean;
   onClose: () => void;
-  dorm: Dormitory;
+  floor: DormFloor;
 }
+
+const schema = yup
+  .object({
+    number: yup.number().required("Įveskite skaičių"),
+  })
+  .required("Privaloma");
 
 const style = {
   position: "absolute" as "absolute",
@@ -26,7 +36,19 @@ const style = {
   p: 4,
 };
 
-const DeleteDormModal = (props: DeleteDormModalProps) => {
+const DeleteFloorModal = (props: DeleteFloorModalProps) => {
+  const cookies = new Cookies();
+  const onDelete = (id?: number) => {
+    if (id)
+      axios
+        .delete(UrlManager.getDeleteFloorEndpoint(id), {
+          headers: {
+            Authorization: `Bearer ${cookies.get("JWT")}`,
+          },
+        })
+        .then(() => window.location.reload())
+        .catch((err) => {});
+  };
   return (
     <Modal
       open={props.open}
@@ -41,7 +63,7 @@ const DeleteDormModal = (props: DeleteDormModalProps) => {
           component="h2"
           className="mb-6"
         >
-          {`Ar tikrai norite ištrinti - "${props.dorm.name}"?`}
+          {`Ar tikrai norite ištrinti - "${props.floor.number} aukštą"?`}
         </Typography>
         <Stack
           direction="row"
@@ -56,7 +78,11 @@ const DeleteDormModal = (props: DeleteDormModalProps) => {
           >
             Atgal
           </Button>
-          <Button variant="contained" startIcon={<DeleteIcon />}>
+          <Button
+            variant="contained"
+            startIcon={<DeleteIcon />}
+            onClick={() => onDelete(props.floor?.id)}
+          >
             Ištrinti
           </Button>
         </Stack>
@@ -65,4 +91,4 @@ const DeleteDormModal = (props: DeleteDormModalProps) => {
   );
 };
 
-export default DeleteDormModal;
+export default DeleteFloorModal;

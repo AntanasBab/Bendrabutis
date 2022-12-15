@@ -46,11 +46,23 @@ export const FloorForm = () => {
       });
   }, []);
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: any) => {
+    axios
+      .post(
+        UrlManager.getCreateFloorEndpoint(data.number, data.dormitoryId),
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.get("JWT")}`,
+          },
+        }
+      )
+      .then(() => window.location.reload());
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={4}>
+      <Stack spacing={4} sx={{ width: "50%" }}>
         <TextField
           label="Aukšto numeris"
           style={{ margin: "10px 0 0 0" }}

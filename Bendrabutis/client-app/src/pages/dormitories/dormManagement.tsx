@@ -11,17 +11,20 @@ import {
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ResponsiveAppBar from "../../components/header/ResponsiveAppBar";
-import { Dormitory } from "../../data/dataModels";
 import { UrlManager } from "../../utils/urlmanager";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteDormModal from "../../components/modal/deleteDormModal";
-import UpdateDormModal from "../../components/modal/updateDormModal";
+import DeleteDormModal from "../../components/modal/dorm/deleteDormModal";
+import UpdateDormModal from "../../components/modal/dorm/updateDormModal";
 import Footer from "../../components/footer/Footer";
 import { DormForm } from "./DormForm";
+import { Dormitory } from "../../data/dataModels";
+import Cookies from "universal-cookie";
 
 const DormManagement = (): JSX.Element => {
+  const cookies = new Cookies();
   const [dormList, SetDormList] = useState<Dormitory[]>();
+  const [selectedDorm, setselectedDorm] = useState<Dormitory>();
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
   const [updateModalOpen, setUpdateModalOpen] = React.useState(false);
 
@@ -35,11 +38,11 @@ const DormManagement = (): JSX.Element => {
     <>
       <ResponsiveAppBar />
       <Grid
-        className="mt-3"
         container
-        direction="row"
+        spacing={2}
         justifyContent="flex-start"
         alignItems="center"
+        sx={{ m: 2, width: "90%" }}
       >
         <Grid item md={6}>
           <Grid
@@ -50,7 +53,7 @@ const DormManagement = (): JSX.Element => {
             spacing={1}
           >
             {dormList?.map((dorm, index) => (
-              <Grid item key={index} xs={"auto"} className="mt-1">
+              <Grid item key={index} xs={"auto"}>
                 <Card sx={{ maxWidth: 345 }}>
                   <CardActionArea>
                     <CardMedia
@@ -77,27 +80,23 @@ const DormManagement = (): JSX.Element => {
                         <Button
                           variant="outlined"
                           startIcon={<DeleteIcon />}
-                          onClick={() => setDeleteModalOpen(true)}
+                          onClick={() => {
+                            setselectedDorm(dorm);
+                            setDeleteModalOpen(true);
+                          }}
                         >
                           Panaikinti
                         </Button>
-                        <DeleteDormModal
-                          open={deleteModalOpen}
-                          onClose={() => setDeleteModalOpen(false)}
-                          dorm={dormList[index]}
-                        />
                         <Button
                           variant="contained"
                           endIcon={<EditIcon />}
-                          onClick={() => setUpdateModalOpen(true)}
+                          onClick={() => {
+                            setselectedDorm(dorm);
+                            setUpdateModalOpen(true);
+                          }}
                         >
                           Redaguoti
                         </Button>
-                        <UpdateDormModal
-                          open={updateModalOpen}
-                          onClose={() => setUpdateModalOpen(false)}
-                          dorm={dorm}
-                        />
                       </Stack>
                     </CardContent>
                   </CardActionArea>
@@ -119,6 +118,16 @@ const DormManagement = (): JSX.Element => {
           <DormForm />
         </Grid>
       </Grid>
+      <DeleteDormModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        dorm={selectedDorm}
+      />
+      <UpdateDormModal
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        dorm={selectedDorm}
+      />
       <Footer />
     </>
   );

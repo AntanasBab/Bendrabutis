@@ -14,14 +14,8 @@ import KTUlogo from "../icons/KTUlogo";
 import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
+import jwt_decode from "jwt-decode";
 
-const pages = [
-  "Laisvi kambariai",
-  "Bendrabučių valdymas",
-  "Aukštų valdymas",
-  "Kambarių valdymas",
-  "Prašymai",
-];
 let settings = ["Profilis", "Atsijungti"];
 
 function ResponsiveAppBar() {
@@ -29,6 +23,24 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
   const cookies = new Cookies();
+  const token = cookies.get("JWT");
+
+  const role = token
+    ? jwt_decode(token)[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+      ]
+    : "";
+
+  const pages =
+    role === "Admin"
+      ? [
+          "Laisvi kambariai",
+          "Bendrabučių valdymas",
+          "Aukštų valdymas",
+          "Kambarių valdymas",
+          "Prašymai",
+        ]
+      : ["Laisvi kambariai"];
 
   useEffect(() => {
     if (cookies.get("JWT") === undefined) settings = ["Prisijungti"];

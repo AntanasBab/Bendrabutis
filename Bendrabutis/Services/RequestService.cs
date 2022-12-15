@@ -5,6 +5,7 @@ using Bendrabutis.Models.Dtos;
 using Bendrabutis.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Bendrabutis.Services
 {
@@ -22,8 +23,11 @@ namespace Bendrabutis.Services
             _authorizationService = authorizationService;
         }
 
-        public async Task<List<Request>> GetRequests()
+        public async Task<List<Request>> GetRequests(ClaimsPrincipal user)
         {
+            if(user.IsInRole(DormitoryRoles.Visitor))
+                return (await _context.Requests.Include(m => m.Author).ToListAsync()).Where(x => x.Author.Id == user.FindFirstValue(JwtRegisteredClaimNames.Sub)).OrderBy(x => x.CreatedAt).ToList();
+
             return (await _context.Requests.Include(m => m.Author).ToListAsync()).OrderBy(x => x.CreatedAt).ToList();
         }
 

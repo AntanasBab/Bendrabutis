@@ -6,25 +6,27 @@ import {
   CardContent,
   CardMedia,
   Stack,
+  Button,
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ResponsiveAppBar from "../../components/header/ResponsiveAppBar";
 import { Room } from "../../data/dataModels";
 import { UrlManager } from "../../utils/urlmanager";
-// import DeleteIcon from "@mui/icons-material/Delete";
-// import EditIcon from "@mui/icons-material/Edit";
-// import DeleteDormModal from "../../components/modal/deleteDormModal";
-// import UpdateDormModal from "../../components/modal/updateDormModal";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import Footer from "../../components/footer/Footer";
 import { RoomForm } from "./RoomForm";
 import Cookies from "universal-cookie";
+import DeleteRoomModal from "../../components/modal/room/deleteRoomModal";
+import UpdateRoomModal from "../../components/modal/room/updateRoomModal";
 
 const RoomManagement = (): JSX.Element => {
   const cookies = new Cookies();
   const [roomList, setRoomList] = useState<Room[]>();
-  // const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  // const [updateModalOpen, setUpdateModalOpen] = React.useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<Room>();
 
   useEffect(() => {
     axios
@@ -40,11 +42,11 @@ const RoomManagement = (): JSX.Element => {
     <>
       <ResponsiveAppBar />
       <Grid
-        className="mt-3"
         container
-        direction="row"
+        spacing={2}
         justifyContent="flex-start"
         alignItems="center"
+        sx={{ m: 2, width: "90%" }}
       >
         <Grid item md={6}>
           <Grid
@@ -54,14 +56,14 @@ const RoomManagement = (): JSX.Element => {
             alignItems="flex-start"
             spacing={1}
           >
-            {roomList?.map((room, index) => (
-              <Grid item key={index} xs={"auto"} className="mt-1">
+            {roomList?.map((room) => (
+              <Grid item xs={"auto"}>
                 <Card sx={{ maxWidth: 345 }}>
                   <CardActionArea>
                     <CardMedia
                       component="img"
                       height="140"
-                      image="https://dormitory.ktu.edu/wp-content/uploads/sites/244/2018/07/Bendrabutis.png"
+                      image="https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?cs=srgb&dl=pexels-jean-van-der-meulen-1457842.jpg&fm=jpg"
                       alt="Bendrabutis"
                     />
                     <CardContent>
@@ -79,36 +81,42 @@ const RoomManagement = (): JSX.Element => {
                         spacing={2}
                         className={"flex mt-6"}
                       >
-                        {/* <Button
+                        <Button
                           variant="outlined"
                           startIcon={<DeleteIcon />}
-                          onClick={() => setDeleteModalOpen(true)}
+                          onClick={() => {
+                            setSelectedRoom(room);
+                            setDeleteModalOpen(true);
+                          }}
                         >
                           Panaikinti
-                        </Button> */}
-                        {/* <DeleteDormModal
-                          open={deleteModalOpen}
-                          onClose={() => setDeleteModalOpen(false)}
-                          dorm={floorList[index]}
-                        />
+                        </Button>
                         <Button
                           variant="contained"
                           endIcon={<EditIcon />}
-                          onClick={() => setUpdateModalOpen(true)}
+                          onClick={() => {
+                            setSelectedRoom(room);
+                            setUpdateModalOpen(true);
+                          }}
                         >
                           Redaguoti
                         </Button>
-                        <UpdateDormModal
-                          open={updateModalOpen}
-                          onClose={() => setUpdateModalOpen(false)}
-                          dorm={dorm}
-                        /> */}
                       </Stack>
                     </CardContent>
                   </CardActionArea>
                 </Card>
               </Grid>
             ))}
+            <DeleteRoomModal
+              room={selectedRoom}
+              onClose={() => setDeleteModalOpen(false)}
+              open={deleteModalOpen}
+            />
+            <UpdateRoomModal
+              room={selectedRoom}
+              onClose={() => setUpdateModalOpen(false)}
+              open={updateModalOpen}
+            />
           </Grid>
         </Grid>
         <Grid

@@ -1,200 +1,155 @@
 import {
   Typography,
   Grid,
-  Button,
-  TextField,
-  InputLabel,
-  Select,
   Card,
   CardActionArea,
   CardContent,
   Stack,
-  MenuItem,
+  Button,
 } from "@mui/material";
-import ResponsiveAppBar from "../../components/header/ResponsiveAppBar";
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Footer from "../../components/footer/Footer";
-import { useEffect, useState } from "react";
-import { SelectChangeEvent } from "@mui/material/Select";
-import { RequestTypes, UserRequest } from "../../data/dataModels";
-import axios from "axios";
-import { UrlManager } from "../../utils/urlmanager";
+import { JWTAuthToken, UserRequest } from "../../data/dataModels";
 import Cookies from "universal-cookie";
-import UpdateRequestModal from "../../components/modal/updateRequestModal";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import Footer from "../../components/footer/Footer";
+import ResponsiveAppBar from "../../components/header/ResponsiveAppBar";
 import EditIcon from "@mui/icons-material/Edit";
+import { UrlManager } from "../../utils/urlmanager";
+import UpdateRequestModal from "../../components/modal/request/updateRequestModal";
+import { RequestForm } from "./RequestForm";
+import jwt_decode from "jwt-decode";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteRequestModal from "../../components/modal/request/deleteRequestModal";
 
-const schema = yup
-  .object({
-    text: yup.string().required("Įrašykite tekstą"),
-  })
-  .required("Forma negali būti tusčia");
-
-export const Requests = (): JSX.Element => {
+const RequestManagement = (): JSX.Element => {
   const cookies = new Cookies();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-  const [reqType, setReqType] = useState<RequestTypes>(RequestTypes.ChangeRoom);
-  const [reqList, setReqList] = useState<UserRequest[]>([]);
-  const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
+  const token = cookies.get("JWT");
+  const [userRequests, setUserRequests] = useState<UserRequest[]>();
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<UserRequest>();
+  const showReq =
+    token &&
+    jwt_decode<JWTAuthToken>(token)[
+      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+    ] === "Admin";
 
   useEffect(() => {
     axios
-      .get<UserRequest[]>(UrlManager.geAllRoomsEndpoint(), {
-        headers: { Authorization: `Bearer ${cookies.get("JWT")}` },
+      .get<UserRequest[]>(UrlManager.geAllRequestsEndpoint(), {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((floors) => {
-        setReqList(floors.data);
+      .then((userRequests) => {
+        console.log(userRequests);
+        setUserRequests(userRequests.data);
       });
-  });
-
-  const handleChange = (event: SelectChangeEvent) => {
-    switch (event.target.value) {
-      case "3":
-        setReqType(RequestTypes.ChangeRoom);
-        break;
-      case "1":
-        setReqType(RequestTypes.MoveIn);
-        break;
-      case "2":
-        setReqType(RequestTypes.MoveOut);
-        break;
-      default:
-        setReqType(RequestTypes.None);
-        break;
-    }
-  };
-  const onSubmit = (data: any) => console.log(data);
-  const btnstyle = { margin: "15px 0 15px 0" };
+  }, []);
 
   return (
     <>
       <ResponsiveAppBar />
       <Grid
         container
-        direction="row"
+        spacing={2}
         justifyContent="flex-start"
-        spacing={3}
         alignItems="center"
+        sx={{ m: 2, width: "90%" }}
       >
-        <Grid item md={6} justifyContent="flex-start" alignItems="flex-start">
+        {userRequests?.length === 0 ? (
           <Typography gutterBottom variant="h5" component="div">
-            Naujas prašymas:
+            Nėra prašymų
           </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <InputLabel id="demo-simple-select-label">Prašymo tipas</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={reqType.toString()}
-              label="Prašymo tipas"
-              onChange={handleChange}
-            >
-              <MenuItem value={"3"}>Keisti kambarį</MenuItem>
-              <MenuItem value={"1"}>Įsikelti</MenuItem>
-              <MenuItem value={"2"}>Išsikelti</MenuItem>
-            </Select>
-            <TextField
-              id="outlined-textarea"
-              label="Įrašykite prašymo tekstą"
-              placeholder="Tekstas"
-              style={{ margin: "10px 0 0 0" }}
-              {...register("text")}
-              error={!!errors.text}
-              helperText={errors.text?.message}
-              fullWidth
-              multiline
-            />
-            <Button
-              type="submit"
-              color="primary"
-              variant="contained"
-              style={btnstyle}
-              fullWidth
-            >
-              Sukurti
-            </Button>
-          </form>
-        </Grid>
-        <Grid item md={6} xl>
-          <Typography
-            gutterBottom
-            variant="h4"
-            component="div"
-            display="flex"
-            justifyContent="flex-start"
-          >
-            Mano prašymai
-          </Typography>
-          {reqList.length === 0 ? (
-            <>
-              <Typography
-                gutterBottom
-                variant="h6"
-                component="div"
-                display="flex"
-                justifyContent="flex-start"
-              >
-                Jūs neturite nei vieno prašymo.
+        ) : (
+          <Grid item md={6}>
+            <Grid item xs={"auto"}>
+              <Typography gutterBottom variant="h4" component="div">
+                Mano prašymai
               </Typography>
-              <Typography
-                gutterBottom
-                variant="h6"
-                component="div"
-                display="flex"
-                justifyContent="flex-start"
-              >
-                Norint pateikti naują prašyma, užpildykite praymo formą kairėje.
-              </Typography>
-            </>
-          ) : (
-            <>
-              {reqList.map((req, index) => (
+            </Grid>
+            <Grid
+              container
+              direction="row"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+              spacing={1}
+            >
+              {userRequests?.map((userRequest, index) => (
                 <Grid item key={index} xs={"auto"} className="mt-1">
                   <Card sx={{ maxWidth: 345 }}>
                     <CardActionArea>
                       <CardContent>
-                        <Typography gutterBottom variant="h3" component="div">
-                          {req.requestType}
+                        <Typography gutterBottom variant="h4" component="div">
+                          {userRequest.author.userName}
                         </Typography>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {req.description}
+                        <Typography variant="h6" color="text.secondary">
+                          {userRequest.author.email}
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                          {userRequest.description}
                         </Typography>
                         <Stack
                           direction="row"
                           spacing={2}
                           className={"flex mt-6"}
                         >
+                          {showReq && (
+                            <Button
+                              variant="outlined"
+                              startIcon={<DeleteIcon />}
+                              onClick={() => {
+                                setSelectedRequest(userRequest);
+                                setDeleteModalOpen(true);
+                              }}
+                            >
+                              Panaikinti
+                            </Button>
+                          )}
                           <Button
                             variant="contained"
                             endIcon={<EditIcon />}
-                            onClick={() => setUpdateModalOpen(true)}
+                            onClick={() => {
+                              setSelectedRequest(userRequest);
+                              setUpdateModalOpen(true);
+                            }}
                           >
                             Redaguoti
                           </Button>
-                          <UpdateRequestModal
-                            request={req}
-                            open={updateModalOpen}
-                            onClose={() => setUpdateModalOpen(false)}
-                          />
                         </Stack>
                       </CardContent>
                     </CardActionArea>
                   </Card>
                 </Grid>
               ))}
-            </>
-          )}
+            </Grid>
+          </Grid>
+        )}
+        <Grid
+          item
+          md={6}
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="flex-start"
+        >
+          <Typography gutterBottom variant="h5" component="div">
+            Naujas prašymas:
+          </Typography>
+          <RequestForm />
         </Grid>
       </Grid>
+
+      <DeleteRequestModal
+        open={deleteModalOpen}
+        request={selectedRequest}
+        onClose={() => setDeleteModalOpen(false)}
+      />
+      <UpdateRequestModal
+        open={updateModalOpen}
+        request={selectedRequest}
+        onClose={() => setUpdateModalOpen(false)}
+      />
       <Footer />
     </>
   );
 };
+
+export default RequestManagement;

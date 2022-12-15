@@ -42,12 +42,13 @@ export default function Rooms() {
   return (
     <>
       <ResponsiveAppBar />
-      <Grid container>
-        <Grid item md={6}>
+      <Grid container spacing={2}>
+        <Grid item md={6} spacing={2}>
           {dormList &&
             dormList.map((dorm) => (
               <Card
-                sx={{ maxWidth: 345 }}
+                className="mt-2 ml-2"
+                sx={{ maxWidth: 400 }}
                 onClick={() => SetSelectedDorm(dorm.id)}
               >
                 <CardActionArea>
@@ -69,10 +70,10 @@ export default function Rooms() {
               </Card>
             ))}
         </Grid>
-        <Grid item md={6}>
+        <Grid item md={6} spacing={2}>
           {roomList &&
             roomList.map((room, key) => (
-              <Card sx={{ maxWidth: 345 }}>
+              <Card sx={{ maxWidth: 250 }} className="mt-2 ml-2">
                 <CardActionArea>
                   <CardMedia
                     component="img"
@@ -93,7 +94,6 @@ export default function Rooms() {
             ))}
         </Grid>
       </Grid>
-
       <Footer />
     </>
   );

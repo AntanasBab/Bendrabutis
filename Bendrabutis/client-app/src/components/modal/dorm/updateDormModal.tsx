@@ -1,31 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Dormitory } from "../../data/dataModels";
 import Button from "@mui/material/Button";
 import DoneIcon from "@mui/icons-material/Done";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Stack from "@mui/material/Stack";
 import { TextField } from "@mui/material";
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { Dormitory } from "../../../data/dataModels";
+import Cookies from "universal-cookie";
+import axios from "axios";
+import { UrlManager } from "../../../utils/urlmanager";
 
 export interface UpdateDormModalProps {
   open: boolean;
   onClose: () => void;
-  dorm: Dormitory;
+  dorm?: Dormitory;
 }
-
-//TODO: FIX VALIDATION
-const schema = yup
-  .object({
-    name: yup.string().default("sss").required("Parasyk"),
-    address: yup.string().required("Parasyk"),
-    roomCapacity: yup.number().required("Parasyk"),
-  })
-  .required("UZPILDYK");
 
 const style = {
   position: "absolute" as "absolute",
@@ -40,15 +31,32 @@ const style = {
 };
 
 const UpdateDormModal = (props: UpdateDormModalProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const [name, setName] = useState<string | undefined>(props.dorm?.name);
+  const [adress, setAdress] = useState<string | undefined>(props.dorm?.address);
+  const [roomCapacity, setRoomCapacity] = useState<number | undefined>(
+    props.dorm?.roomCapacity
+  );
 
-  const onSubmit = (data: any) => console.log(data);
+  const cookies = new Cookies();
+  const onUpdate = () => {
+    if (props.dorm && name && adress && roomCapacity)
+      axios
+        .patch(
+          UrlManager.getUpdateDormEndpoint(
+            props.dorm?.id,
+            name,
+            adress,
+            roomCapacity
+          ),
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${cookies.get("JWT")}`,
+            },
+          }
+        )
+        .then(() => window.location.reload());
+  };
   return (
     <Modal
       open={props.open}
@@ -60,37 +68,31 @@ const UpdateDormModal = (props: UpdateDormModalProps) => {
         <Typography gutterBottom variant="h5" component="div">
           Bendrabučio redagavimas:
         </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <TextField
             label="Bendrabučio pavadinimas"
             style={{ margin: "10px 0 0 0" }}
             placeholder="Įveskite bendrabučio pavadinimas"
-            {...register("name")}
-            defaultValue={props.dorm.name}
-            error={!!errors.name}
-            helperText={errors.name?.message}
+            defaultValue={props.dorm?.name}
+            onChange={(e) => setName(e.target.value)}
             fullWidth
             required
           />
           <TextField
             label="Adresas"
             placeholder="Įveskite adresą"
-            {...register("address")}
-            defaultValue={props.dorm.address}
-            error={!!errors.address}
             style={{ margin: "10px 0 0 0" }}
-            helperText={errors.address?.message}
+            defaultValue={props.dorm?.address}
+            onChange={(e) => setAdress(e.target.value)}
             fullWidth
             required
           />
           <TextField
             label="Kambarių kiekis"
             placeholder="Įveskite kambarių kiekį"
-            {...register("roomCapacity")}
             style={{ margin: "10px 0 0 0" }}
-            defaultValue={props.dorm.roomCapacity}
-            error={!!errors.roomCapacity}
-            helperText={errors.roomCapacity?.message}
+            defaultValue={props.dorm?.roomCapacity}
+            onChange={(e) => setRoomCapacity(Number(e.target.value))}
             fullWidth
             required
           />
@@ -107,7 +109,11 @@ const UpdateDormModal = (props: UpdateDormModalProps) => {
             >
               Atgal
             </Button>
-            <Button variant="contained" startIcon={<DoneIcon />}>
+            <Button
+              variant="contained"
+              startIcon={<DoneIcon />}
+              onClick={() => onUpdate()}
+            >
               Atnaujinti
             </Button>
           </Stack>

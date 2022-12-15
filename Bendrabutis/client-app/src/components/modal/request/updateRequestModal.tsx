@@ -1,28 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { UserRequest } from "../../data/dataModels";
+import { UserRequest } from "../../../data/dataModels";
 import Button from "@mui/material/Button";
 import DoneIcon from "@mui/icons-material/Done";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Stack from "@mui/material/Stack";
 import { TextField } from "@mui/material";
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
+import { UrlManager } from "../../../utils/urlmanager";
+import Cookies from "universal-cookie";
 
 export interface UpdateRequestModalProps {
   open: boolean;
   onClose: () => void;
-  request: UserRequest;
+  request?: UserRequest;
 }
-
-const schema = yup
-  .object({
-    description: yup.string().required("Laukas negali būti tusčias."),
-  })
-  .required("Laukas negali būti tusčias.");
 
 const style = {
   position: "absolute" as "absolute",
@@ -37,15 +31,26 @@ const style = {
 };
 
 const UpdateRequestModal = (props: UpdateRequestModalProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const cookies = new Cookies();
+  const [description, setDescription] = useState<string | undefined>(
+    props.request?.description
+  );
 
-  const onSubmit = (data: any) => console.log(data);
+  const onUpdate = () => {
+    if (props.request && description)
+      axios
+        .patch(
+          UrlManager.getUpdateRequestEndpoint(props.request.id, description),
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${cookies.get("JWT")}`,
+            },
+          }
+        )
+        .then(() => window.location.reload());
+  };
+
   return (
     <Modal
       open={props.open}
@@ -57,15 +62,13 @@ const UpdateRequestModal = (props: UpdateRequestModalProps) => {
         <Typography gutterBottom variant="h5" component="div">
           Prašymo redagavimas:
         </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <TextField
             label="Prašymo žinutė"
             style={{ margin: "10px 0 0 0" }}
             placeholder="Prašymo žinutė"
-            {...register("description")}
-            defaultValue={props.request.description}
-            error={!!errors.description}
-            helperText={errors.description?.message}
+            defaultValue={props.request?.description}
+            onChange={(e) => setDescription(e.target.value)}
             fullWidth
             required
           />
@@ -82,7 +85,11 @@ const UpdateRequestModal = (props: UpdateRequestModalProps) => {
             >
               Atgal
             </Button>
-            <Button variant="contained" startIcon={<DoneIcon />}>
+            <Button
+              variant="contained"
+              startIcon={<DoneIcon />}
+              onClick={() => onUpdate()}
+            >
               Atnaujinti
             </Button>
           </Stack>

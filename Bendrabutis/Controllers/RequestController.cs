@@ -26,7 +26,7 @@ namespace Bendrabutis.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _requestService.GetRequests());
+            return Ok(await _requestService.GetRequests(User));
         }
 
         [HttpGet("{id}")]
@@ -37,7 +37,6 @@ namespace Bendrabutis.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Create(NewPostDto newPostDto)
         {
             return await _requestService.Create(User.FindFirstValue(JwtRegisteredClaimNames.Sub), newPostDto)
