@@ -22,7 +22,7 @@ Applikacija pasiekiama - https://bendrabutiswen.azurewebsites.net
 
 ## Aplikacijos wireframes ir atitinkantys langai
 
-PDF failą su wireframes galite rasti [čia](Wireframes.pdf) (Wireframes.pdf).
+PDF failą su wireframes galite rasti [čia](wireframes.pdf) (wireframes.pdf).
 
 ## API dokumentacija
 
