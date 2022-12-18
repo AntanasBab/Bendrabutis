@@ -26,7 +26,7 @@ PDF failą su wireframes galite rasti [čia](Wireframes.pdf) (Wireframes.pdf).
 
 ## API dokumentacija
 
-PDF failą su API dokumentacija galite rasti [čia](API_dokumentacija.pdf) (Wireframes.pdf).
+PDF failą su API dokumentacija galite rasti [čia](API_dokumentacija.pdf) (API_dokumentacija.pdf).
 
 ## Projekto išvados
 
