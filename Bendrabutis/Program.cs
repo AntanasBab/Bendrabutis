@@ -1,6 +1,7 @@
 global using Bendrabutis.Data;
 global using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
 using Bendrabutis.Services;
 using System.Text.Json.Serialization;
@@ -16,7 +17,7 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsApi",
-        builder => builder.WithOrigins("http://localhost:3000", "https://bendrabutisapp.azurewebsites.net", "https://bendrabutissystem.azurewebsites.net")
+        builder => builder.WithOrigins("http://localhost:3000", "https://bendrabutiswen.azurewebsites.net")
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
@@ -28,7 +29,13 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(s =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    s.IncludeXmlComments(xmlPath);
+});
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -75,7 +82,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    options.SwaggerEndpoint("/swagger/v1/swagger.json",
+    "Bendrabutis v1"));
+    app.UseReDoc(options =>
+    {
+        options.DocumentTitle = "Bendrabutis v1";
+        options.SpecUrl = "/swagger/v1/swagger.json";
+    });
 }
 
 app.UseHttpsRedirection();

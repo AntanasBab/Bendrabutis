@@ -12,6 +12,7 @@ import FloorManagement from "./pages/floors/FloorManagement";
 import RoomManagement from "./pages/rooms/RoomManagement";
 import Register from "./pages/auth/register";
 import { Grid } from "@mui/material";
+import { RedocStandalone } from "redoc";
 
 function App() {
   return (
@@ -49,7 +50,6 @@ function App() {
             }
           />
           <Route path="/requestcreation" element={<RequestManagement />} />
-          <Route path="/profile" element={<></>} />
         </Routes>
       </Grid>
     </Router>
